@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LLM CLI Web</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
+    #chat { max-width: 900px; margin: 0 auto; }
+    .msg { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; margin: 10px 0; }
+    .role { font-size: 12px; color: #666; margin-bottom: 6px; }
+    textarea { width: 100%; max-width: 900px; height: 90px; font-size: 14px; }
+    button { margin-top: 10px; padding: 10px 14px; }
+    .row { max-width: 900px; margin: 0 auto; }
+    .thinking { color: #666; }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">LLM Web Command</h2>
+
+  <div id="chat" class="row"></div>
+
+  <div class="row">
+    <textarea id="command" placeholder="Type your command..."></textarea>
+    <button id="send">Send</button>
+    <div id="status" class="thinking"></div>
+  </div>
+
+<script>
+  const chatEl = document.getElementById("chat");
+  const commandEl = document.getElementById("command");
+  const sendBtn = document.getElementById("send");
+  const statusEl = document.getElementById("status");
+
+  function addMsg(role, text) {
+    const div = document.createElement("div");
+    div.className = "msg";
+    div.innerHTML = `<div class="role">${role}</div><div>${escapeHtml(text)}</div>`;
+    chatEl.appendChild(div);
+    chatEl.scrollIntoView({behavior: "smooth", block: "end"});
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  async function send() {
+    const cmd = commandEl.value.trim();
+    if (!cmd) return;
+
+    addMsg("user", cmd);
+    commandEl.value = "";
+
+    statusEl.textContent = "Waiting for LLM...";
+    sendBtn.disabled = true;
+
+    try {
+      const resp = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ command: cmd })
+      });
+
+      const data = await resp.json();
+      addMsg("assistant", data.reply || "(no reply)");
+    } catch (e) {
+      addMsg("assistant", "[Request failed] " + e);
+    } finally {
+      statusEl.textContent = "";
+      sendBtn.disabled = false;
+    }
+  }
+
+  sendBtn.addEventListener("click", send);
+  commandEl.addEventListener("keydown", (e) => {
+    // Ctrl+Enter to send
+    if (e.ctrlKey && e.key === "Enter") send();
+  });
+</script>
+</body>
+</html>
