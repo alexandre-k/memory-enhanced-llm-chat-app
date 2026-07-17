@@ -6,6 +6,7 @@ description = "Interactive CLI for memory / embeddings / storage"
 requires-python = ">=3.13"
 dependencies = [
     "colorlog>=6.10.1",
+    "dashscope>=1.26.3",
     "fastapi>=0.138.2",
     "openai>=2.44.0",
     "python-dateutil>=2.9.0.post0",

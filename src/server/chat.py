@@ -30,12 +30,12 @@ class LlmChat:
         if len(memories) > 0:
             user_prompt = f"""You are a helpful assistant with memory of past conversations. Use the settings or context naturally if relevant; don't mention you're using memories.
 """
-            settings_block =  "\n".join(f"- {mem['content']}" for mem in memories if mem["category"] == MemoryCategory.SETTING or mem["category"] == MemoryCategory.PREFERENCE)
+            settings_block =  "\n".join(f"- {mem['content']}" for mem in memories if mem["category"].upper() == MemoryCategory.SETTING.upper() or mem["category"].upper() == MemoryCategory.PREFERENCE.upper())
             user_prompt += f"""
 User settings (always apply these):
 {settings_block}
 """
-            memory_block =  "\n".join(f"- {mem['content']}" for mem in memories if not (mem["category"] == MemoryCategory.SETTING or mem["category"] == MemoryCategory.PREFERENCE))
+            memory_block =  "\n".join(f"- {mem['content']}" for mem in memories if not (mem["category"] == MemoryCategory.SETTING or mem["category"].upper() == MemoryCategory.PREFERENCE.upper()))
             user_prompt += f"""Other relevant context:
 {memory_block}
 """

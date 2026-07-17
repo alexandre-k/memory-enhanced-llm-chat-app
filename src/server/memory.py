@@ -102,7 +102,7 @@ Text to analyze:
     async def save_memories(self, user_id: str, memories: list, metadata):
         for m in memories:
             embedding = self.embed(m["content"])
-            await self.db.save_memory(user_id, m["content"], metadata, embedding, m["confidence"], m["entities"], m["category"])
+            await self.db.save_memory(user_id, m["content"], metadata, embedding, m["confidence"], m["entities"], m["category"].upper())
 
     async def recall(self, user_id: str, content: str):
         log.info(f"Recall memory for user {user_id}: '{content}'")
