@@ -77,7 +77,11 @@ Copy the example environment file:
 mv .env.example .env
 ```
 
-> Edit `.env` if needed to match your backend endpoint or API keys.
+> Edit `.env` if needed to match your backend endpoint or API keys. If you just
+> run the `memory-cli` app, you don't need to do anything else as the access is
+> not restricted. Only if you run `llm-server` locally you will need to edit
+> `.env` with a set of API keys and URLs (like `localhost:8000` for the app to
+> communicate to your local instance).
 
 ## 5. Run the CLI
 
@@ -125,7 +129,7 @@ cat ip_users.json
 To reuse pre-existing test memories (e.g., the guitar preference), restore the included test ID:
 
 ```bash
-rm -f ip_users.json
+rm ip_users.json
 mv tests/ip_users.json .
 cat ip_users.json
 ```
